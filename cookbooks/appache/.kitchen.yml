@@ -1,0 +1,35 @@
+---
+driver:
+  name: ec2
+  aws_ssh_key_id: vikram-test
+  region: us-east-1
+  availability_zone: a
+  subnet_id: subnet-7a54c354
+  instance_type: t2.micro
+  image_id: ami-09479453c5cde9639
+  security_group_ids: ["sg-04612495586c9c601"]
+  retryable_tries: 120
+
+provisioner:
+  name: chef_zero
+
+verifier:
+  name: inspec
+
+transport:
+  ssh_key: /home/ec2-user/.ssh/vikram-test.pem
+  connection_timeout: 10
+  connection_retries: 5
+  username: ec2-user
+
+platforms:
+  - name: amazon-2017.03 
+
+suites:
+  - name: default
+    run_list:
+      - recipe[appache::default]
+    verifier:
+      inspec_tests:
+        - test/integration/default
+    attributes:
